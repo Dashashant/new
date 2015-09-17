@@ -11,7 +11,7 @@ void GenerateString(int n, char *string)
   for(i = 1 ; i < n; i++)
   {
     string[(1 << i) - 1] = 'a' + i;
-    memcpy(string + (1 << i), string, sizeof(char)*((1 << i) - 1));
+    memcpy(string + (1 << i), string, sizeof(char) * ((1 << i) - 1));
   }
 }
 

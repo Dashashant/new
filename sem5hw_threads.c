@@ -28,12 +28,22 @@ void* summary(void* task)
 }
 int main()
 {
+  /*
+   * Вы же специально завели отдельную константу N для числа нитей.
+   * Поэтому надо для thread_ids и results также завести массивы.
+   */
+  
     pthread_t thread_id , thread_id1, thread_id2, thread_id3, my_thread_id;
     int result, result1, result2, result3;
     int i;
 
     for(i = 0; i < MAX; i++)
       mas[i] = 1;
+    
+    /*
+     * Вы весь последующий код дублируете по N раз. Это следует делать просто в цикле.
+     */
+    
     struct Task tasks[N];
     tasks[0].index = 0;
     tasks[0].a = 0;

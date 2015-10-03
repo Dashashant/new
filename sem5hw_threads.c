@@ -1,9 +1,14 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #define N 4
 #define MAX 100000000
 
+/*
+ * array - массив
+ * Лучше такие большие массивы создавайте в куче malloc`ом, т.к. только чудом программа не падает из-за нехватки памяти по крайней мере у меня.
+ */
 long int mas[MAX];
 
 struct Thread
@@ -11,6 +16,7 @@ struct Thread
   pthread_t id;
   int result;
 };
+
 struct Task
 {
   int index;
@@ -33,16 +39,18 @@ void* summary(void* task)
 }
 int main()
 {
-    pthread_t thread_id , thread_id1, thread_id2, thread_id3, my_thread_id;
-    int result, result1, result2, result3;
     int i;
 
     for(i = 0; i < MAX; i++)
+      //mas[i] = rand() % 2;
       mas[i] = 1;
    
     struct Task tasks[N];
     struct Thread threads[N];
     
+    /*
+     * А что, если MAX не делится нацело на N?
+     */
     for(i = 0; i < N; i++)
     {
       tasks[i].index = 0;
@@ -58,7 +66,7 @@ int main()
                             &tasks[i]);
       
       if (threads[i].result) {
-        printf("Can`t create thread, returned value = %d\n" , result);
+        printf("Can`t create thread, returned value = %d\n" , threads[i].result);
         exit(-1);
       }
     }
@@ -67,6 +75,14 @@ int main()
     {
       pthread_join(threads[i].id , (void **) NULL);
     }
+    
+    /*
+     * Тут тоже нужен цикл от 0 до N, суммирующий результат.
+     * Да, у вас выдаётся неверный результат пока (в N раз меньше нужного).
+     * 
+     * Вам совсем немного осталось поправить. В задании требовалось найти среднее и дисперсию.
+     */
+    int result;
     printf("%ld", res[0] + res[1] + res[2] + res[3]);
 
     return 0;

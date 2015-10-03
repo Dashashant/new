@@ -6,6 +6,11 @@
 
 long int mas[MAX];
 
+struct Thread
+{
+  pthread_t id;
+  int result;
+};
 struct Task
 {
   int index;
@@ -28,73 +33,40 @@ void* summary(void* task)
 }
 int main()
 {
-  /*
-   * Вы же специально завели отдельную константу N для числа нитей.
-   * Поэтому надо для thread_ids и results также завести массивы.
-   */
-  
     pthread_t thread_id , thread_id1, thread_id2, thread_id3, my_thread_id;
     int result, result1, result2, result3;
     int i;
 
     for(i = 0; i < MAX; i++)
       mas[i] = 1;
-    
-    /*
-     * Вы весь последующий код дублируете по N раз. Это следует делать просто в цикле.
-     */
-    
+   
     struct Task tasks[N];
-    tasks[0].index = 0;
-    tasks[0].a = 0;
-    tasks[0].b = MAX / N;
+    struct Thread threads[N];
+    
+    for(i = 0; i < N; i++)
+    {
+      tasks[i].index = 0;
+      tasks[i].a = i * MAX / N ;
+      tasks[i].b = (i + 1) * MAX / N;
+    }
 
-    tasks[1].index = 1;
-    tasks[1].a = MAX / N + 1;
-    tasks[1].b = 2 * MAX / N;
-
-    tasks[2].index = 2;
-    tasks[2].a = 2* MAX / N + 1;
-    tasks[2].b = 3 * MAX / N;
-
-    tasks[3].index = 3;
-    tasks[3].a = 3 * MAX / N + 1;
-    tasks[3].b = MAX;
-
-    result = pthread_create(&thread_id ,
+    for(i = 0; i < N; i++)
+    {
+      threads[i].result = pthread_create(&(threads[i].id) ,
                             (pthread_attr_t *)NULL ,
                             summary ,
-                            &tasks[0]);
-    result1 = pthread_create(&thread_id1 ,
-                            (pthread_attr_t *)NULL ,
-                            summary ,
-                            &tasks[1]);
-    result2 = pthread_create(&thread_id ,
-                            (pthread_attr_t *)NULL ,
-                            summary, &tasks[2]);
-    result3 = pthread_create(&thread_id1 ,
-                            (pthread_attr_t *)NULL ,
-                            summary, &tasks[3]);
-
-    if (result) {
+                            &tasks[i]);
+      
+      if (threads[i].result) {
         printf("Can`t create thread, returned value = %d\n" , result);
         exit(-1);
-    }
-    if (result1) {
-        printf("Can`t create thread, returned value = %d\n" , result);
-        exit(-1);
-    }
-    if (result2) {
-        printf("Can`t create thread, returned value = %d\n" , result);
-        exit(-1);
-    }
-    if (result3) {
-        printf("Can`t create thread, returned value = %d\n" , result);
-        exit(-1);
+      }
     }
 
-    pthread_join(thread_id , (void **) NULL);
-    pthread_join(thread_id1 , (void **) NULL);
+    for(i = 0; i < N; i++)
+    {
+      pthread_join(threads[i].id , (void **) NULL);
+    }
     printf("%ld", res[0] + res[1] + res[2] + res[3]);
 
     return 0;

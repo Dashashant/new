@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define N 4
-#define MAX 100000000
+#define N 1
+#define MAX 1000000 
 long int * array;
 
 struct Thread
@@ -39,7 +39,8 @@ int main()
   array = (long int *)malloc(MAX * sizeof(long int));
 
   for(i = 0; i < MAX; i++)
-    array[i] = rand() % 2;
+    array[i] = 1;
+    // array[i] = rand() % 2;
 
   struct Task tasks[N];
   struct Thread threads[N];
@@ -80,11 +81,22 @@ int main()
     result += res[i];
   }
 
+  /*
+   * При вычислении среднего и дисперсии нужно делить на число элементов в массиве, а не на число нитей.
+   * Дисперсию необходимо также посчитать с помощью N нитей.
+   */
   for(i = 0; i < N; i++)
   {
-    D += (array[i] - result/N) * (array[i] - result/N);
+    D += (array[i] - (float)result / MAX) * (array[i] - (float)result / MAX);
   }
 
-  printf("average %ld, dispertion %ld  ", result/N, D/N);
+  /*
+   * Смотрите, пусть у вас значение элементов массива одинаковы и равны 1. Тогда среднее должно быть также равно 1, а дисперсия - 0.
+   * Если вместо одной нити вы используте 2, 3, 4 ... нити, то результат (величина среднего и дисперсии) не должны измениться. Изменится только время, которое затратила программа на 
+   * вычисления. Поэтому, если для разных N результат различный, то в вашем коде ошибка.
+   * Вы перепутали индекс в одном месте. Выведите массив res, и посмотрите результат работы каждой из нитей.
+   */
+  
+  printf("average %f, dispertion %f\n", (float)result / MAX, (float)D / MAX);
   return 0;
 }

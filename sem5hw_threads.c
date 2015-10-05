@@ -114,6 +114,11 @@ void* dispertion(void* task)
    {
      D += desp_res[i];
    }
+   
+   for(i = 0; i < N; i++)
+   {
+     pthread_join(threads[i].id , (void **) NULL);
+   }
 
    printf("average %f, dispertion %f\n", (float)result / MAX, (float)D / MAX);
    return 0;

@@ -1,62 +1,40 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
 #define size_str 100
-#define size_delim 10
+#define size_delim 100 
 
-void split(char *str, char *delimiters, char ***words, int *count)
+void Split(char* string, char* delim, char*** tokens, int* Count)
 {
   int i;
-  char *s = strtok(str, delimiters);
-  char **temp;
-  *words = NULL;
-  *count = 0;
+  char *pch = strtok(string, delim);
+  char **tmp;
 
-  while(s != NULL)
+  printf("\nЛексемы:");
+  tmp = (char**) malloc(sizeof(char*) * 1);
+
+  while (pch != NULL) 
   {
-    /*
-     * FIXIT:
-     * Вы используете в итоге слишком много памяти, т.к. не чистите её за собой совсем.
-     * Это надо делать.
-     * Выделить память + скопировать прежние данные делает команда realloc.
-     */
-    temp = (char**)malloc((int)sizeof(char*) * (*count + 1));
+    //  printf("\n%s", pch);
+    tmp = (char**) realloc(tmp,(int) (sizeof(char*) * (*Count + 1)));
 
-    for (i = 0; i < *count; i++)
-    {
-      temp[i] = (*words)[i];
-    }
-
-    *words = temp;
-    (*words)[*count] = s;
-    (*count)++;
-
-    s = strtok(NULL, delimiters);
+    *tokens = tmp;
+    (*tokens)[*Count] = pch;
+    (*Count)++;
+    pch = strtok (NULL, delim);
   }
+  return; 
 }
-
 int main()
 {
-  /*
-   * FIXIT:
-   * Ваш код похож на переделанный начальный вариант программы Никиты. Если я ошибаюсь, то поправьте меня. Самое страшное, что он теперь ещё и неверно работает.
-   * Вы помните, что уличение в списывании ведёт к удвоению количества домашних упражнений.
-   * Поэтому в этот раз считаем, что вы сами написали неработащий код: не получается, например, разбить строку "a a", когда разделитель - пробел.
-   * 
-   * При компиляции выводились предупреждения из-за того, что не подключили stdlib.h для malloc`а.
-   * 
-   * В целом, код хорошо написан.
-   */
-
-  char *str = (char *)malloc(sizeof(char) * size_str);
-  char *delimiters = (char *)malloc(sizeof(char) * size_delim);
+  char *str = (char *) malloc(sizeof(char) * size_str);
+  char *delimiters = (char *) malloc(sizeof(char) * size_delim);
   char **words;
   int i, count = 0;
 
-  scanf("%s", str);
-  scanf("%s", delimiters);
-  split(str, delimiters, &words, &count);
+  gets(str);
+  gets(delimiters);
+  Split(str, delimiters, &words, &count);
 
   for (i = 0; i < count; i++)
   {

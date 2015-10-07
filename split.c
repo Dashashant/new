@@ -1,8 +1,13 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#define size_str 100
-#define size_delim 100 
+
+/*
+ * Называйте константы либо так STRING_SIZE, либо хотя бы StringSize, чтобы они отличались от обычных переменных.
+ */
+
+#define STRING_SIZE 100
+#define DELIM_SIZE 100 
 
 void Split(char* string, char* delim, char*** tokens, int* Count)
 {
@@ -11,7 +16,10 @@ void Split(char* string, char* delim, char*** tokens, int* Count)
   char **tmp;
 
   printf("\nЛексемы:");
-  tmp = (char**) malloc(sizeof(char*) * 1);
+  /*
+   * malloc был лишним
+   */
+  tmp = NULL;
 
   while (pch != NULL) 
   {
@@ -23,12 +31,12 @@ void Split(char* string, char* delim, char*** tokens, int* Count)
     (*Count)++;
     pch = strtok (NULL, delim);
   }
-  return; 
 }
+
 int main()
 {
-  char *str = (char *) malloc(sizeof(char) * size_str);
-  char *delimiters = (char *) malloc(sizeof(char) * size_delim);
+  char *str = (char *) malloc(sizeof(char) * STRING_SIZE);
+  char *delimiters = (char *) malloc(sizeof(char) * DELIM_SIZE);
   char **words;
   int i, count = 0;
 
@@ -41,5 +49,13 @@ int main()
     printf("\n%s", words[i]);
   }
 
+  /*
+   * Надо чистить самим память.
+   */
+  
   return 0;
 }
+
+/*
+ * В целом всё нормально. Засчитано.
+ */

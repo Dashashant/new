@@ -6,6 +6,14 @@
 #include <stdlib.h>
 #include <fcntl.h>
 #define M 100000
+
+/*
+ * Пойдёт, засчитано. Не используйте магические константы.
+ * #define MAX_STRING_SIZE 11
+ * 
+ * Ещё надо с семафорами сделать программу.
+ */
+
 int main()
 {
    int new = 1;

@@ -29,6 +29,12 @@ void* my_func1(void* dummy)
    mybuf.sem_flg = 0;
    mybuf.sem_num = 0; //with wich
 
+   /*
+    * FIXIT:
+    * Чтобы осуществлять операции A(S, n) и D(S, n) надо вызвать системный вызов semop, в который передать переменную типа (struct sembuf).
+    * Пока семафоров фактически нет.
+    */
+   
    ++a[0];
 
    mybuf.sem_op = -1;

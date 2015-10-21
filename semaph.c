@@ -6,7 +6,7 @@
 #include <sys/sem.h>
 
 #define N 3
-#define MAX 100000
+#define MAX 10000000
 
 long int a[N] = {0, 1, 2};
 
@@ -29,12 +29,6 @@ void* my_func1(void* dummy)
    mybuf.sem_flg = 0;
    mybuf.sem_num = 0; //with wich
 
-   /*
-    * FIXIT:
-    * Чтобы осуществлять операции A(S, n) и D(S, n) надо вызвать системный вызов semop, в который передать переменную типа (struct sembuf).
-    * Пока семафоров фактически нет.
-    */
-   
    ++a[0];
 
    mybuf.sem_op = -1;
@@ -82,6 +76,7 @@ int main()
                             my_func1 ,
                             NULL);
 
+    semop(semid, &mybuf, 1);
     if (result) {
         printf("Can`t create thread, returned value = %d\n" , result);
         exit(-1);
@@ -97,3 +92,5 @@ int main()
 
     return 0;
 }
+
+

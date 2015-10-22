@@ -1,10 +1,3 @@
-/* Программа 2 для иллюстрации работы с очередями сообщений */
-
-/* Эта программа получает доступ к очереди сообщений,
-и читает из нее сообщения с любым типом в порядке FIFO до тех пор,
-пока не получит сообщение с типом 255, которое будет служить
-сигналом прекращения работы. */
-
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/msg.h>
@@ -127,9 +120,15 @@ int main()
     if(pid == 0)
     {
 
-      mybufsem.sem_op = -1; // what do
+      mybufsem.sem_op = -1; 
       mybufsem.sem_flg = 0;
       mybufsem.sem_num = 0;
+
+      if(semop(semid, &mybufsem, 1) < 0)
+      {
+        printf("Can't wait for condition\n");
+      }
+
 
       mybuf.mtype = 1;
       mybuf.info.res = mybuf.info.a * mybuf.info.b;
@@ -144,9 +143,15 @@ int main()
       }
         exit(0);
 
-      mybufsem.sem_op = 1; 
+      mybufsem.sem_op = 1;
       mybufsem.sem_flg = 0;
       mybufsem.sem_num = 0;
+
+      if(semop(semid, &mybufsem, 1) < 0)
+      {
+        printf("Can't wait for condition\n");
+      }
+
 
     } 
   }
@@ -163,8 +168,6 @@ int main()
      msgctl(msqid, IPC_RMID, (struct msqid_ds*)NULL);
      exit(-1);
   }*/
-
-
 
   return 0;
 } 

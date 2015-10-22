@@ -6,7 +6,7 @@
 #include <sys/sem.h>
 
 #define N 3
-#define MAX 10000000
+#define MAX 100
 
 long int a[N] = {0, 1, 2};
 
@@ -21,19 +21,30 @@ void* my_func1(void* dummy)
 
  struct sembuf mybuf; 
 
-
-
  for(i = 0; i < MAX; i++)
  { 
-   mybuf.sem_op = 1; // what do
-   mybuf.sem_flg = 0;
-   mybuf.sem_num = 0; //with wich
-
-   ++a[0];
-
-   mybuf.sem_op = -1;
+   mybuf.sem_op = -1; 
    mybuf.sem_flg = 0;
    mybuf.sem_num = 0;
+
+   if(semop(semid, &mybuf, 1) < 0)
+   {
+      printf("Can't wait for condition\n");
+   }
+
+
+   a[0]++;
+
+   mybuf.sem_op = 1;
+   mybuf.sem_flg = 0;
+   mybuf.sem_num = 0;
+   semop(semid, &mybuf, 1);
+
+   if(semop(semid, &mybuf, 1) < 0)
+   {
+      printf("Can't wait for condition\n");
+   }
+
  }
 
  return;
@@ -76,7 +87,7 @@ int main()
                             my_func1 ,
                             NULL);
 
-    semop(semid, &mybuf, 1);
+
     if (result) {
         printf("Can`t create thread, returned value = %d\n" , result);
         exit(-1);
@@ -92,5 +103,3 @@ int main()
 
     return 0;
 }
-
-

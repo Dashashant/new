@@ -6,6 +6,10 @@
 #include <stdlib.h>
 #include <sys/sem.h>
 
+/*
+  FIXIT: Удалите из кода всё лишнее.
+ */
+
 /* Тип сообщения для прекращения работы */
 #define LAST_MESSAGE 255
 #define N 2
@@ -97,8 +101,15 @@ int main()
      * максимальной длиной информативной части 81 символ до тех пор, пока не
      * поступит сообщение с типом LAST_MESSAGE */
 
+    /*
+     * FIXIT: надо 81 заменить на sizeof нужно структуры.
+     */
     maxlen = 81;
 
+    /*
+     * FIXIT: сервер должен принимать только сообщения типа 1, а не все подряд.
+     * Иначе есть шанс прочитать своё же сообщение, отправленное клиенту.
+     */
     if ((len = msgrcv(msqid, (struct msgbuf *)&mybuf, maxlen, 0, 0)) < 0)
     {
       printf("Can\'t receive message from queue\n");
@@ -113,8 +124,17 @@ int main()
 
     printf("message type = %ld, info = %d\n, %d, id %d\n", mybuf.mtype, mybuf.info.a, mybuf.info.b, mybuf.info.id);
 
+    /*
+     * FIXIT: значением N надо инициализировать семафор до начала получения сообщений (вне бесконечного цикла).
+     * Инициализация произойдёт только тогда, когда вызовите системный вызов semop(...).
+     * 
+     * Надо сначала записать в поля переменной mybufsem нужные значения, а потом вызвать semop.
+     * 
+     * У вас та же проблема с инициализацией семафора в программе semaph.c
+     */
     semop(semid, &mybufsem, 1);
     mybufsem.sem_op = N;
+    
     pid_t pid = fork();
 
     if(pid == 0)
@@ -141,6 +161,10 @@ int main()
         msgctl(msqid, IPC_RMID, (struct msqid_ds*)NULL);
         exit(-1);
       }
+      /*
+       * FIXIT:
+       * У вас дочерний процесс не возвращает значение семафора в исходное состояние после завершения.
+       */
         exit(0);
 
       mybufsem.sem_op = 1;

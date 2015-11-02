@@ -6,7 +6,7 @@
 #include <sys/sem.h>
 
 #define N 3
-#define MAX 100
+#define MAX 100000
 
 long int a[N] = {0, 1, 2};
 
@@ -20,6 +20,9 @@ void* my_func1(void* dummy)
  key_t key; 
 
  struct sembuf mybuf; 
+
+ mybuf.sem_op = 1;
+ semop(semid, &mybuf, 1);
 
  for(i = 0; i < MAX; i++)
  { 
@@ -38,7 +41,6 @@ void* my_func1(void* dummy)
    mybuf.sem_op = 1;
    mybuf.sem_flg = 0;
    mybuf.sem_num = 0;
-   semop(semid, &mybuf, 1);
 
    if(semop(semid, &mybuf, 1) < 0)
    {
@@ -77,14 +79,6 @@ int main()
         exit(-1);
     }
 
-    /*
-     * FIXIT: Этот код не должен работать вот почему:
-     * когда вы впервые создаёте семафор, в нем по умолчанию записывается значение 0.
-     * Далее в каждой нити вы патаетесь выполнить операцию D, т.е. вычесть 1 из него, и обе нити "повиснут" на этой операции.
-     * Т.е. вы забыли перед запуском нитей записать в семафор значение 1.
-     * 
-     * Чтобы не было путаницы, после завершения работы программы лучше семафор удалить (вызов semctl).
-     */
 
     result = pthread_create(&thread_id ,
                             (pthread_attr_t *)NULL ,
@@ -108,6 +102,7 @@ int main()
     pthread_join(thread_id , (void **) NULL);
     pthread_join(thread_id1 , (void **) NULL);
     printf("%ld", a[0]);
+    semctl(semid, IPC_RMID, (int) NULL);
 
     return 0;
 }

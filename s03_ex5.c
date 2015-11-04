@@ -75,7 +75,7 @@ void Split(char *string, char *delim, char ***tokens, int *Count)
 }
 void Get(struct cmds **comands, int num)
 {
-  char *delimiters=" \n";
+  char *delimiters = " \n";
   char **Args = (char **)malloc((NUM_ARG) * sizeof(char *));
 
   int i, j;

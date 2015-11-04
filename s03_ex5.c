@@ -24,6 +24,12 @@ void Get(struct cmds **comands, int num);
 int main()
 {
   int numCmd, i;
+
+  /*
+   * Если ожидаете на вход некий специальный файл, то также заливайте его в репозиторий, чтобы можно было даже не заглядывая в код
+   * скомпилировать и запустить его, и всё бы при этом работало.
+  */
+
   fin = fopen("file_for_exec.txt", "rt");
 
   struct cmds *comands =(struct cmds *)malloc(NUM_CMD * sizeof(struct cmds));
@@ -44,6 +50,12 @@ int main()
     }
   }
 
+  /*
+   * FIXIT:
+   * добавьте код, чтобы родительский процесс дожидался завершения работы детей и выводил статусы
+   * их завершения, т.е. то i, которое передаётся в exit.
+   */
+  
   fclose(fin);
 
   for (i = 0; i < NUM_CMD; i++)
@@ -55,6 +67,12 @@ int main()
   free(tmp);
   return 0;
 }
+
+/*
+ * FIXIT: вы называли все переменные со строчной буквы, и вдруг в одном месте назвали с заглавной: Count.
+ * Везде стиль должке быть один.
+ */
+
 void Split(char *string, char *delim, char ***tokens, int *Count)
 {
   int i;
@@ -73,10 +91,11 @@ void Split(char *string, char *delim, char ***tokens, int *Count)
     pch = strtok (NULL, delim);
   }
 }
+
 void Get(struct cmds **comands, int num)
 {
   char *delimiters = " \n";
-  char **Args = (char **)malloc((NUM_ARG) * sizeof(char *));
+  char **Args = (char **)malloc(NUM_ARG * sizeof(char *));
 
   int i, j;
 

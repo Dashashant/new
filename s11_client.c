@@ -53,6 +53,11 @@ int main(int argc, char** argv)
   fgets(sendline, MAX_LEN, stdin);
   sendline[strlen(sendline) - 1 ] = '\0';
 
+  /*
+    Вы отправляете имя, но никак его не используете. 
+    Ок, пусть пока так будет.
+  */
+  
   if (sendto(sockfd, sendline, strlen(sendline) + 1, 0, 
       (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0)
   {
@@ -65,6 +70,9 @@ int main(int argc, char** argv)
 
   if(pid != 0)
   {
+    /*
+     * У вас пользователь сможет только 1 раз отправить сообщение
+     */
     fgets(sendline, MAX_LEN, stdin);
 
     if (sendto(sockfd, sendline, strlen(sendline) + 1, 0, 

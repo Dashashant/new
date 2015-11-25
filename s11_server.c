@@ -7,6 +7,14 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdlib.h>
+
+/*
+ * У файлов не было формата. Такое обычно не компилируется.
+ * 
+ * У меня сервер падает с ошибкой Address family not supported by protocol.
+ * Давайте вы на семинаре продемонстрируете работу.
+ */
+
 #define MAX 5
 int N;
 int main()
@@ -23,7 +31,7 @@ int main()
   servaddr.sin_port = htons(53000);
   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-  if ((sockfd = socket(PF_INET, SOCK_DGRAM, 0)) < 0)
+  if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
   {
     perror(NULL);
     exit(1);
@@ -74,6 +82,9 @@ int main()
 
     for( i = 0; i < N; i++)  
     {
+      /*
+       * Пользователь, отправивший сообщение, получит его тоже. Ок, пусть так.
+       */
       if (sendto(sockfd, line, strlen(line), 0,
         (struct sockaddr*)&cliaddr_mas[i], clilen) < 0)
       {

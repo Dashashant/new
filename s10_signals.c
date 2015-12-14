@@ -9,6 +9,10 @@ int current_bit = 0;
 char s1[MAX_LEN];
 char s2[MAX_LEN];
 
+/*
+ * Засчитано.
+ */
+
 void Send()
 {
   char bit;
@@ -18,6 +22,12 @@ void Send()
   bit = s1[num] & (1 << position);
   current_bit++;  
 
+  /*
+   * Можно использовать тернарный оператор:
+   * kill(pid, bit ? SIGUSR2 : SIGUSR1);
+   * вместо if-else в данном случае.
+   */
+  
   if(bit)
   {
     kill(pid, SIGUSR2);
@@ -56,7 +66,7 @@ int main()
 
   for(i = 0; i < MAX_LEN; i++)
   { 
-    s1[i] = 'c';
+    s1[i] = 'a' + i % ('z' - 'a' + 1);
     s2[i] = 0;
   }
   

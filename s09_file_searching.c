@@ -8,6 +8,11 @@
 
 #define MAX_LEN_DIR 100
 #define MAX_FILE_NAME 100
+
+/*
+ * Хорошо. Засчитано. Потом кратко устно прокомментируете, как ф-я Find работает.
+ */
+
 int Find(char *current_dir, int depth, char *file);
 
 int Find(char *current_dir, int depth, char *file)
